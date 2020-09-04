@@ -32,10 +32,10 @@ def normal (x):
         #Determines whether probability being searched is less than or more than X. Then calculate probability.
         if norm_operation_var.get() == "<":
             probability = (norm.cdf (random_var, loc = mu, scale = sigma))
-            norm_result.config(text = "The probability that X is lower than " + str(random_var) + " is " + str(round(probability,3)))
+            norm_result.config(text = "The probability that X is lower than " + str(random_var) + " is " + str(round(probability,norm_accuracy_var.get())))
         elif norm_operation_var.get() == ">":
             probability = 1 - (norm.cdf (random_var, loc = mu, scale = sigma))
-            norm_result.config(text = "The probability that X is more than " + str(random_var) + " is " + str(round(probability,3)))
+            norm_result.config(text = "The probability that X is more than " + str(random_var) + " is " + str(round(probability,norm_accuracy_var.get())))
 
 def graph_normal (x):
     if x == 0:
@@ -56,9 +56,9 @@ def graph_normal (x):
         legendx = norm_legendx_entry.get().strip()
         legendy = norm_legendy_entry.get().strip()
         #Sets up labels for x-axis and y-axis, if inputted.
-        if legendx != "Optional" and legendx != "":
+        if legendx != "":
             plt.xlabel (legendx)
-        if legendy != "Optional" and legendy != "":
+        if legendy != "":
             plt.ylabel (legendy)
 
         #Generates 200 plot points linearly spaced between (mean - 4SD) and (mean + 4SD) for x-axis
@@ -106,6 +106,10 @@ norm_sd_var.set("Standard Deviation")
 norm_operation_var = StringVar()
 norm_operation_var.set("<")
 
+#Stores Accuracy
+norm_accuracy_var = IntVar()
+norm_accuracy_var.set(3)
+
 norm_header = Label (normalframe, text = "Normal Distribution", width = 20, font = header1, fg = "#14a795")
 
 norm_calculate_label = Label (normalframe, text = "Calculate Probability", width = 20, font = header2, anchor = W)
@@ -121,13 +125,18 @@ norm_sd_entry = Entry (normalframe, width = 25)
 norm_x_label = Label (normalframe, text = "X", font = equation)
 norm_x_entry = Entry (normalframe, width = 25)
 
-norm_calculate = Button (normalframe, text = "CALCULATE", font = inline, command = lambda: normal_errorcheck(0), width = 60)
+norm_accuracy_label =  Label (normalframe, text = "Accuracy (s.f.)", font = equation)
+norm_accuracy_dropdown = OptionMenu (normalframe, norm_accuracy_var, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+norm_accuracy_dropdown.config (width = 23)
+
+norm_calculate = Button (normalframe, text = "CALCULATE", font = inline, command = lambda: normal_errorcheck(0), width = 60, height = 2)
 
 #Tuple for all norm_entry fields
 norm_entries = (norm_mean_entry, norm_sd_entry, norm_x_entry)
 
 norm_operation_label1 = Label (normalframe, text = "=", font = equation)
 norm_operation_label2 = Label (normalframe, text = "=", font = equation)
+norm_operation_label3 = Label (normalframe, text = "=", font = equation)
 norm_operation_dropdown = OptionMenu (normalframe, norm_operation_var, "<", ">")
 
 norm_result = Label (normalframe, text = "  ", font = inline, fg = "#14a795")
@@ -137,18 +146,16 @@ norm_result = Label (normalframe, text = "  ", font = inline, fg = "#14a795")
 norm_graph_label = Label (normalframe, text = "Graph Function", width = 20, font = header2, anchor = W)
 norm_graph_desc = Label (normalframe, text = "This section will graph a Normal distribution probability density function.", width = 60, font = inline, anchor = W)
 
-norm_legendx_label = Label (normalframe, text = "x-axis label", font = equation)
+norm_legendx_label = Label (normalframe, text = "x-axis label (optional)", font = equation)
 norm_legendx_entry = Entry (normalframe, width = 25)
-norm_legendx_entry.insert (0, "Optional")
 
-norm_legendy_label = Label (normalframe, text = "y-axis label", font = equation)
+norm_legendy_label = Label (normalframe, text = "y-axis label (optional)", font = equation)
 norm_legendy_entry = Entry (normalframe, width = 25)
-norm_legendy_entry.insert (0, "Optional")
 
-norm_operation_label3 = Label (normalframe, text = "=", font = equation)
-norm_operation_label4 = Label (normalframe, text = "=", font = equation)
+norm_operation_labela = Label (normalframe, text = "=", font = equation)
+norm_operation_labelb = Label (normalframe, text = "=", font = equation)
 
-norm_graph = Button (normalframe, text = "GRAPH", font = inline, command = lambda : normal_errorcheck(1), width = 60)
+norm_graph = Button (normalframe, text = "GRAPH", font = inline, command = lambda : normal_errorcheck(1), width = 60, height = 2, bg = "black")
 
 
 
@@ -164,22 +171,25 @@ norm_mean_entry.grid (row = 3, column = 2)
 norm_sd_dropdown.grid (row = 4, column = 0, sticky = W, padx = 3)
 norm_sd_entry.grid (row = 4, column = 2)
 norm_x_label.grid (row = 5, column = 0, sticky = W, padx = 3)
-norm_x_entry.grid (row = 5, column = 2, pady = 10)
-norm_calculate.grid (row = 6, column = 0, columnspan = 3)
+norm_x_entry.grid (row = 5, column = 2)
+norm_calculate.grid (row = 6, column = 0, columnspan = 3, pady = 3)
+norm_accuracy_label.grid (row = 7, column = 0, sticky = W)
+norm_accuracy_dropdown.grid (row = 7, column = 2)
 norm_operation_label1.grid (row = 3, column = 1)
 norm_operation_label2.grid (row = 4, column = 1)
 norm_operation_dropdown.grid (row = 5, column = 1)
-norm_result.grid(row = 7, column = 0, columnspan = 3)
+norm_operation_label3.grid (row = 7, column = 1)
+norm_result.grid(row = 8, column = 0, columnspan = 3)
 
-norm_graph_label.grid (row = 8, column = 0, padx = 3, pady = (20, 0), columnspan = 3, sticky = W)
-norm_graph_desc.grid (row = 9, column = 0, columnspan = 3, padx = 3, sticky = W)
-norm_legendx_label.grid (row = 10, column = 0, sticky = W, padx = 3)
-norm_legendx_entry.grid (row = 10, column = 2)
-norm_legendy_label.grid (row = 11, column = 0, sticky = W, padx = 3)
-norm_legendy_entry.grid (row = 11, column = 2)
-norm_operation_label3.grid (row = 10, column = 1)
-norm_operation_label4.grid (row = 11, column = 1)
-norm_graph.grid (row = 12, column = 0, columnspan = 3)
+norm_graph_label.grid (row = 9, column = 0, padx = 3, pady = (20, 0), columnspan = 3, sticky = W)
+norm_graph_desc.grid (row = 10, column = 0, columnspan = 3, padx = 3, sticky = W)
+norm_legendx_label.grid (row = 11, column = 0, sticky = W, padx = 3)
+norm_legendx_entry.grid (row = 11, column = 2)
+norm_legendy_label.grid (row = 12, column = 0, sticky = W, padx = 3)
+norm_legendy_entry.grid (row = 12, column = 2)
+norm_operation_labela.grid (row = 11, column = 1)
+norm_operation_labelb.grid (row = 12, column = 1)
+norm_graph.grid (row = 13, column = 0, columnspan = 3, pady = 3)
 
 
 
