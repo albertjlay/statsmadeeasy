@@ -109,6 +109,7 @@ norm_operation_var.set("<")
 norm_header = Label (normalframe, text = "Normal Distribution", width = 20, font = header1, fg = "#14a795")
 
 norm_calculate_label = Label (normalframe, text = "Calculate Probability", width = 20, font = header2, anchor = W)
+norm_calculate_desc = Label (normalframe, text = "This section will calculate the probability of a random variable X.", width = 60, font = inline, anchor = W)
 
 norm_mean_label = Label (normalframe, text = "Mean", font = equation)
 norm_mean_entry = Entry (normalframe, width = 25)
@@ -151,9 +152,13 @@ norm_graph = Button (normalframe, text = "GRAPH", font = inline, command = lambd
 
 
 
+
+
+
 #Places Normal widget on screen
 norm_header.grid (row = 0, column = 0, columnspan = 3, pady = (0, 20))
-norm_calculate_label.grid (row = 2, column = 0, padx = 3)
+norm_calculate_label.grid (row = 1, column = 0, padx = 3)
+norm_calculate_desc.grid(row = 2, column = 0 , padx = 3, columnspan = 3, sticky = W)
 norm_mean_label.grid (row = 3, column = 0, sticky = W, padx = 3)
 norm_mean_entry.grid (row = 3, column = 2)
 norm_sd_dropdown.grid (row = 4, column = 0, sticky = W, padx = 3)
@@ -167,7 +172,7 @@ norm_operation_dropdown.grid (row = 5, column = 1)
 norm_result.grid(row = 7, column = 0, columnspan = 3)
 
 norm_graph_label.grid (row = 8, column = 0, padx = 3, pady = (20, 0), columnspan = 3, sticky = W)
-norm_graph_desc.grid (row = 9, column = 0, columnspan = 3, padx = 1, sticky = W)
+norm_graph_desc.grid (row = 9, column = 0, columnspan = 3, padx = 3, sticky = W)
 norm_legendx_label.grid (row = 10, column = 0, sticky = W, padx = 3)
 norm_legendx_entry.grid (row = 10, column = 2)
 norm_legendy_label.grid (row = 11, column = 0, sticky = W, padx = 3)
