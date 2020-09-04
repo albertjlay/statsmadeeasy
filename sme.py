@@ -125,7 +125,7 @@ norm_sd_entry = Entry (normalframe, width = 25)
 norm_x_label = Label (normalframe, text = "X", font = equation)
 norm_x_entry = Entry (normalframe, width = 25)
 
-norm_accuracy_label =  Label (normalframe, text = "Accuracy (s.f.)", font = equation)
+norm_accuracy_label =  Label (normalframe, text = "Accuracy (d.p.)", font = equation)
 norm_accuracy_dropdown = OptionMenu (normalframe, norm_accuracy_var, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 norm_accuracy_dropdown.config (width = 23)
 
