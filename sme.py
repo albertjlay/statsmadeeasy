@@ -1,5 +1,5 @@
 from tkinter import *
-from scipy.stats import norm
+from scipy.stats import norm, binom
 import matplotlib.pyplot as plt
 import numpy as np
 import tkinter.font as tkfont
@@ -15,6 +15,177 @@ header1 = tkfont.Font(size = 36, family = "Impact")
 header2 = tkfont.Font(size = 18, family = "Impact")
 inline = tkfont.Font(size = 14, family = "Helvetica")
 equation = tkfont.Font(size = 14, family = "Baskerville")
+
+
+
+
+#Function to calculate binomial probability
+def binomial (x):
+    if x == 0:
+        #Stores entries in variables.
+        n = int(binom_n_entry.get().strip())
+        p = float (binom_p_entry.get().strip())
+        y = int (binom_y_entry.get().strip())
+
+        #Initializes probability to 0
+        probability = 0
+
+        if binom_operation_var.get() == "=":
+            probability = binom.pmf(y, n, p)
+            binom_result.config(text = "The probability that Y is " + str(y) + " is " + str(round(probability,binom_accuracy_var.get())))
+
+        #Cumulative probabilities
+        elif binom_operation_var.get() == "<" or binom_operation_var.get() == "<=":
+            for i in range (0, y):
+                probability += binom.pmf(i, n, p)
+            if binom_operation_var.get() == "<=":
+                probability += binom.pmf (y,n,p)
+                binom_result.config(text = "The probability that Y is lower than or equal to " + str(y) + " is " + str(round(probability,binom_accuracy_var.get())))
+            else:
+                binom_result.config(text = "The probability that Y is lower than " + str(y) + " is " + str(round(probability,binom_accuracy_var.get())))
+        else:
+            for i in range (y + 1,n + 1):
+                probability += binom.pmf(i, n, p)
+            if binom_operation_var.get() == ">=":
+                probability += binom.pmf (y,n,p)
+                binom_result.config(text = "The probability that Y is greater than or equal to " + str(y) + " is " + str(round(probability,binom_accuracy_var.get())))
+            else:
+                binom_result.config(text = "The probability that Y is greater than " + str(y) + " is " + str(round(probability,binom_accuracy_var.get())))
+
+
+
+
+#Function that checks for bad inputs.
+def binom_errorcheck():
+    #x is variable that will be returned to the binomial function to indicate whether an error occurred. 0 means no error.
+    x = 0
+    for i in binom_entries:
+        #Checks for Error 1 : No input was given
+        if i.get().strip() == "":
+            i.insert (0,"Error 1: Please insert a parameter.")
+            x = 1
+        else:
+            try:
+                float(i.get().strip())
+            except:
+                i.delete (0, END)
+                i.insert (0,"Error 2: Please insert a valid number.")
+                x = 2
+
+    if x == 0: #If all entry fields are numbers.
+        #Assigns entries to variables.
+        p = float(binom_p_entry.get().strip())
+        n = float (binom_n_entry.get().strip())
+        y = float(binom_y_entry.get().strip())
+
+        #Checks if p is in range.
+        if p > 1 or p < 0:
+            binom_p_entry.delete(0, END)
+            binom_p_entry.insert(0, "Error 3: Please input a valid probability.")
+            x = 3
+
+        #Checks if n is a positive integer
+        try:
+            int (n)
+            if n < 1:
+                binom_n_entry.delete(0, END)
+                binom_n_entry.insert(0, "Error 5: Please input a valid positive integer.")
+                x = 5
+        except:
+            binom_n_entry.delete(0, END)
+            binom_n_entry.insert(0, "Error 4: Please input a valid positive integer.")
+            x = 4
+
+        #Checks if y is an integer, positive, and in range of n.
+        try:
+            int (y)
+            if y < 1:
+                binom_y_entry.delete(0, END)
+                binom_y_entry.insert(0, "Error 5: Please input a valid positive integer.")
+                x = 5
+            if y > n:
+                binom_y_entry.delete(0, END)
+                binom_y_entry.insert(0, "Error 6: Please input an integer in range of n.")
+                x = 6
+        except:
+            binom_y_entry.delete(0, END)
+            binom_y_entry.insert(0, "Error 4: Please input a valid positive integer.")
+            x = 4
+
+    binomial (x)
+
+
+
+#Frame for Normal distribution section.
+binomframe = LabelFrame (root)
+binomframe.grid (row = 0, column = 0, padx = 20)
+
+#Inside of binomframe
+
+#Stores which operation user chooses.
+binom_operation_var = StringVar()
+binom_operation_var.set("=")
+
+#Stores Accuracy
+binom_accuracy_var = IntVar()
+binom_accuracy_var.set(3)
+
+binom_header = Label (binomframe, text = "Binomial Distribution", width = 20, font = header1, fg = "#ea5252")
+
+binom_calculate_label = Label (binomframe, text = "Calculate Probability", width = 20, font = header2, anchor = W)
+binom_calculate_desc = Label (binomframe, text = "This section will calculate the probability of a random variable Y.", width = 60, font = inline, anchor = W)
+
+binom_n_label = Label (binomframe, text = "n (Number of occurences)", font = equation)
+binom_n_entry = Entry (binomframe, width = 25)
+
+binom_p_label = Label (binomframe, text = "p (Probability of success)", font = equation)
+binom_p_entry = Entry (binomframe, width = 25)
+
+binom_y_label = Label (binomframe, text = "Y", font = equation)
+binom_y_entry = Entry (binomframe, width = 25)
+
+binom_accuracy_label =  Label (binomframe, text = "Accuracy (d.p.)", font = equation)
+binom_accuracy_dropdown = OptionMenu (binomframe, binom_accuracy_var, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+binom_accuracy_dropdown.config (width = 23)
+
+binom_calculate = Button (binomframe, text = "CALCULATE", font = inline, command = binom_errorcheck, width = 60, height = 2)
+
+#Tuple for all norm_entry fields
+binom_entries = (binom_n_entry, binom_p_entry, binom_y_entry)
+
+binom_operation_label1 = Label (binomframe, text = "=", font = equation)
+binom_operation_label2 = Label (binomframe, text = "=", font = equation)
+binom_operation_label3 = Label (binomframe, text = "=", font = equation)
+binom_operation_dropdown = OptionMenu (binomframe, binom_operation_var, "=", "<", "<=", ">", ">=")
+
+binom_result = Label (binomframe, text = "  ", font = inline, fg = "#ea5252")
+
+
+
+
+#Places Normal widget on screen
+binom_header.grid (row = 0, column = 0, columnspan = 3, pady = (0, 20))
+binom_calculate_label.grid (row = 1, column = 0, padx = 3)
+binom_calculate_desc.grid(row = 2, column = 0 , padx = 3, columnspan = 3, sticky = W)
+binom_p_label.grid (row = 3, column = 0, sticky = W, padx = 3)
+binom_p_entry.grid (row = 3, column = 2)
+binom_n_label.grid (row = 4, column = 0, sticky = W, padx = 3)
+binom_n_entry.grid (row = 4, column = 2)
+binom_y_label.grid (row = 5, column = 0, sticky = W, padx = 3)
+binom_y_entry.grid (row = 5, column = 2)
+binom_calculate.grid (row = 6, column = 0, columnspan = 3, pady = 3)
+binom_accuracy_label.grid (row = 7, column = 0, sticky = W)
+binom_accuracy_dropdown.grid (row = 7, column = 2)
+binom_result.grid(row = 8, column = 0, columnspan = 3)
+
+
+binom_operation_label1.grid (row = 3, column = 1)
+binom_operation_label2.grid (row = 4, column = 1)
+binom_operation_dropdown.grid (row = 5, column = 1)
+binom_operation_label3.grid (row = 7, column = 1)
+
+
+
 
 #Function to calculate normal probability
 def normal (x):
@@ -95,7 +266,7 @@ def normal_errorcheck(a):
 
 #Frame for Normal distribution section.
 normalframe = LabelFrame (root)
-normalframe.grid (row = 0, column = 1, padx = 20)
+normalframe.grid (row = 0, column = 2, padx = 20)
 
 #Inside of normalframe
 #Stores whether user chooses SD or variance.
