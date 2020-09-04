@@ -1,6 +1,9 @@
 from tkinter import *
 from scipy.stats import norm
+import matplotlib.pyplot as plt
+import numpy as np
 import tkinter.font as tkfont
+
 
 
 root = Tk()
@@ -21,17 +24,51 @@ def normal (x):
             sigma = math.sqrt(float(norm_sd_entry.get()))
         else:
             sigma = float(norm_sd_entry.get())
+        #Stores mean in mu
+        mu = float(norm_mean_entry.get())
+        #Stores X in random_var
+        random_var = float(norm_x_entry.get())
 
-            #Determines whether probability being searched is less than or more than X. Then calculate probability.
-            if norm_operation_var.get() == "<":
-                probability = (norm.cdf (float(norm_x_entry.get()), loc = float(norm_mean_entry.get()), scale = sigma))
-                norm_result.config(text = "The probability that X is lower than " + norm_x_entry.get() + " is " + str(round(probability,3)))
-            elif norm_operation_var.get() == ">":
-                probability = 1 - (norm.cdf (float(norm_x_entry.get()), loc = float(norm_mean_entry.get()), scale = sigma))
-                norm_result.config(text = "The probability that X is more than " + norm_x_entry.get() + " is " + str(round(probability,3)))
+        #Determines whether probability being searched is less than or more than X. Then calculate probability.
+        if norm_operation_var.get() == "<":
+            probability = (norm.cdf (random_var, loc = mu, scale = sigma))
+            norm_result.config(text = "The probability that X is lower than " + str(random_var) + " is " + str(round(probability,3)))
+        elif norm_operation_var.get() == ">":
+            probability = 1 - (norm.cdf (random_var, loc = mu, scale = sigma))
+            norm_result.config(text = "The probability that X is more than " + str(random_var) + " is " + str(round(probability,3)))
 
 def graph_normal (x):
-    return 1
+    if x == 0:
+        #If variance was inputted, change to SD first before calculaton. If SD, store SD as float.
+        if norm_sd_var.get() == "Variance":
+            sigma = math.sqrt(float(norm_sd_entry.get()))
+        else:
+            sigma = float(norm_sd_entry.get())
+
+        #Stores mean in mu
+        mu = float(norm_mean_entry.get())
+
+        #Sets x limits based on mu and sigma. Sets y limits based on height of mean.
+        plt.xlim(mu - 4 * sigma, mu + 4 * sigma)
+        plt.ylim (0, norm.pdf(mu, mu, sigma) + 0.1)
+
+        #Stores legendx and legendy in variables
+        legendx = norm_legendx_entry.get().strip()
+        legendy = norm_legendy_entry.get().strip()
+        #Sets up labels for x-axis and y-axis, if inputted.
+        if legendx != "Optional" and legendx != "":
+            plt.xlabel (legendx)
+        if legendy != "Optional" and legendy != "":
+            plt.ylabel (legendy)
+
+        #Generates 200 plot points linearly spaced between (mean - 4SD) and (mean + 4SD) for x-axis
+        x = np.linspace(mu - 4 * sigma, mu + 4 * sigma, 200)
+        #Inserts all 200 values of X into a pdf of normal distribution
+        y = norm.pdf(x, mu, sigma)
+        #Plots coordinates and show graph
+        plt.plot (x, y, color = "#14a795")
+        plt.show()
+
 
 #Function that checks for bad inputs. Also takes a parameter a which will be used to determine whether graph or calculate is desired.
 def normal_errorcheck(a):
@@ -96,21 +133,19 @@ norm_result = Label (normalframe, text = "  ", font = inline, fg = "#14a795")
 
 
 
-
 norm_graph_label = Label (normalframe, text = "Graph Function", width = 20, font = header2, anchor = W)
 norm_graph_desc = Label (normalframe, text = "This section will graph a Normal distribution probability density function.", width = 60, font = inline, anchor = W)
 
 norm_legendx_label = Label (normalframe, text = "x-axis label", font = equation)
 norm_legendx_entry = Entry (normalframe, width = 25)
-norm_legendx_entry.insert (0, "(optional)")
+norm_legendx_entry.insert (0, "Optional")
 
 norm_legendy_label = Label (normalframe, text = "y-axis label", font = equation)
 norm_legendy_entry = Entry (normalframe, width = 25)
-norm_legendy_entry.insert (0, "(optional)")
+norm_legendy_entry.insert (0, "Optional")
 
 norm_operation_label3 = Label (normalframe, text = "=", font = equation)
 norm_operation_label4 = Label (normalframe, text = "=", font = equation)
-
 
 norm_graph = Button (normalframe, text = "GRAPH", font = inline, command = lambda : normal_errorcheck(1), width = 60)
 
