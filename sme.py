@@ -22,14 +22,13 @@ def normal ():
     else:
         sigma = float(sd_entry.get())
 
-    #Determines whether probability being searched is less than or more than X
+    #Determines whether probability being searched is less than or more than X. Then calculate probability.
     if operation_var.get() == "<":
         probability = (norm.cdf (float(x_entry.get()), loc = float(mean_entry.get()), scale = sigma))
+        result_label.config(text = "The probability that X is lower than " + x_entry.get() + " is " + str(round(probability,3)))
     elif operation_var.get() == ">":
         probability = 1 - (norm.cdf (float(x_entry.get()), loc = float(mean_entry.get()), scale = sigma))
-
-    #Prints label into GUI
-    result_label.config(text = "The probability that X is lower than " + x_entry.get() + " is " + str(round(probability,3)))
+        result_label.config(text = "The probability that X is more than " + x_entry.get() + " is " + str(round(probability,3)))
 
 
 
