@@ -1,5 +1,6 @@
 from tkinter import *
-from scipy.stats import norm, binom,poisson
+from scipy.stats import norm, binom
+from scipy.stats import poisson
 import matplotlib.pyplot as plt
 import numpy as np
 import tkinter.font as tkfont
@@ -243,7 +244,8 @@ def binomial (m):
             else:
                 binom_result.config(text = "P ( Y > " + str(y) + " ) = " + str(round(probability,binom_accuracy_var.get())))
 
-
+        #Prints expectation and variance
+        binom_expvar.config (text = "Expectation = " + str (round(n * p, binom_accuracy_var.get())) + "\nVariance = " + str(round(n * p * (1-p), binom_accuracy_var.get())))
 
 
 #Function that checks for bad inputs.
@@ -355,6 +357,7 @@ binom_operation_label3 = Label (binomframe, text = "=", font = equation)
 binom_operation_dropdown = OptionMenu (binomframe, binom_operation_var, "=", "<", "<=", ">", ">=")
 
 binom_result = Label (binomframe, text = "  ", font = result, fg = "#a9df32")
+binom_expvar = Label (binomframe, text = " ", font = result, fg = "#a9df32")
 
 
 
@@ -372,7 +375,8 @@ binom_y_entry.grid (row = 5, column = 2)
 binom_calculate.grid (row = 6, column = 0, columnspan = 3, pady = 3)
 binom_accuracy_label.grid (row = 7, column = 0, sticky = W)
 binom_accuracy_dropdown.grid (row = 7, column = 2)
-binom_result.grid(row = 8, column = 0, columnspan = 3, pady = (10, 173))
+binom_result.grid(row = 8, column = 0, columnspan = 3, pady = (10,0))
+binom_expvar.grid (row = 9, column = 0, columnspan = 3, pady = (0, 153))
 
 
 binom_operation_label1.grid (row = 3, column = 1)
@@ -382,11 +386,8 @@ binom_operation_label3.grid (row = 7, column = 1)
 
 
 
-
-
-
 #Function to calculate Poisson probability
-def poisson (m):
+def poiss (m):
     if m == 0:
         #Stores entries in variables.
         l = float (poisson_l_entry.get().strip())
@@ -417,6 +418,7 @@ def poisson (m):
                 poisson_result.config(text = "P ( Z > " + str(z) + " ) = " + str(round(probability,poisson_accuracy_var.get())))
             else:
                 poisson_result.config(text = "P ( Z >= " + str(z) + " ) = " + str(round(probability,poisson_accuracy_var.get())))
+        poisson_expvar.config (text = "Expectation = " + str(round (l, poisson_accuracy_var.get())) + "\nVariance = " + str(round (l, poisson_accuracy_var.get())))
 
 
 #Function that checks for bad inputs.
@@ -432,17 +434,18 @@ def poisson_errorcheck():
             #Checks for Error 2: Input not float
             try:
                 float(i.get().strip())
-                #Check for Error 3: Input not positive
-                if i < 0:
-                    poisson_z_entry.delete(0, END)
-                    poisson_z_entry.insert(0, "Error 3: Input must be positive.")
-                    m = 3
             except:
                 i.delete (0, END)
                 i.insert (0,"Error 2: Input was not a float.")
                 m = 2
+        if m == 0:
+            #Check for Error 3: Input not positive
+            if float(i.get().strip()) < 0:
+                poisson_z_entry.delete(0, END)
+                poisson_z_entry.insert(0, "Error 3: Input must be positive.")
+                m = 3
 
-    poisson (m)
+    poiss (m)
 
 
 
@@ -485,6 +488,7 @@ poisson_operation_label2 = Label (poissonframe, text = "=", font = equation)
 poisson_operation_dropdown = OptionMenu (poissonframe, poisson_operation_var, "=", "<", "<=", ">", ">=")
 
 poisson_result = Label (poissonframe, text = "  ", font = result, fg = "#14a795")
+poisson_expvar = Label (poissonframe, text = "  ", font = result, fg = "#14a795")
 
 
 
@@ -500,7 +504,8 @@ poisson_z_entry.grid (row = 4, column = 2)
 poisson_calculate.grid (row = 5, column = 0, columnspan = 3, pady = 3)
 poisson_accuracy_label.grid (row = 6, column = 0, sticky = W)
 poisson_accuracy_dropdown.grid (row = 6, column = 2)
-poisson_result.grid(row = 7, column = 0, columnspan = 3, pady = (10, 200))
+poisson_result.grid(row = 7, column = 0, columnspan = 3, pady = (10, 0))
+poisson_expvar.grid(row = 8, column = 0, columnspan = 3, pady = (0, 180))
 
 
 poisson_operation_label1.grid (row = 3, column = 1)
