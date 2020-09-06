@@ -77,11 +77,11 @@ def graph_normal (n):
             #Generates 200 plot points, linearly spaced in range.
             a = np.linspace (mu - 4*sigma, float(norm_x_entry.get()), 200)
             #Colors according to range. Note that norm.pdf is used instead of y because the first parameter must be according to area. If not, a different norm will be created.
-            plt.fill_between (a, norm.pdf(a, mu, sigma))
+            plt.fill_between (a, norm.pdf(a, mu, sigma), color = "#ea5252")
         else:    #Colors from X to (mean + 4SD)
             a = np.linspace (float(norm_x_entry.get()), mu + 4 * sigma, 200)
             #Colors according to range. Note that norm.pdf is used instead of y because the first parameter must be according to area. If not, a different norm will be created.
-            plt.fill_between (a, norm.pdf(a, mu, sigma))
+            plt.fill_between (a, norm.pdf(a, mu, sigma), color = "#ea5252")
 
         #Shows figure in matplotlib software
         plt.show()
@@ -89,25 +89,25 @@ def graph_normal (n):
 
 #Function that checks for bad inputs. Also takes a parameter a which will be used to determine whether graph or calculate is desired.
 def normal_errorcheck(a):
-    #x is variable that will be returned to the normal function to indicate whether an error occurred. 0 means no error.
-    n = 0
+    #m is variable that will be returned to the normal function to indicate whether an error occurred. 0 means no error.
+    m = 0
     for i in norm_entries:
         #Checks for Error 1 : No input was given
         if i.get().strip() == "":
-            i.insert (0,"Error 1: Please insert a parameter.")
-            n = 1
+            i.insert (0,"Error 1: This is a required field.")
+            m = 1
         else:
             #Checks for error 2: Input was not a number.
             try:
                 float(i.get().strip())
             except:
                 i.delete (0, END)
-                i.insert (0,"Error 2: Please insert a valid number.")
-                n = 2
+                i.insert (0,"Error 2: Input must be a number.")
+                m = 2
     if a == 0:
-        normal (n)
+        normal (m)
     elif a == 1:
-        graph_normal (n)
+        graph_normal (m)
 
 
 #Frame for Normal distribution section.
@@ -211,8 +211,8 @@ norm_graph.grid (row = 13, column = 0, columnspan = 3, pady = 3)
 
 
 #Function to calculate binomial probability
-def binomial (x):
-    if x == 0:
+def binomial (m):
+    if m == 0:
         #Stores entries in variables.
         n = int(binom_n_entry.get().strip())
         p = float (binom_p_entry.get().strip())
@@ -248,62 +248,67 @@ def binomial (x):
 
 #Function that checks for bad inputs.
 def binom_errorcheck():
-    #x is variable that will be returned to the binomial function to indicate whether an error occurred. 0 means no error.
-    x = 0
+    #m is variable that will be returned to the binomial function to indicate whether an error occurred. 0 means no error.
+    m = 0
     for i in binom_entries:
         #Checks for Error 1 : No input was given
         if i.get().strip() == "":
-            i.insert (0,"Error 1: Please insert a parameter.")
-            x = 1
+            i.insert (0,"Error 1: This is a required field.")
+            m = 1
         else:
+            #Checks for Error 2 : i is not a number
             try:
                 float(i.get().strip())
             except:
                 i.delete (0, END)
-                i.insert (0,"Error 2: Please insert a valid number.")
-                x = 2
+                i.insert (0,"Error 2: Input must be a number.")
+                m = 2
 
-    if x == 0: #If all entry fields are numbers.
+    if m == 0: #If all entry fields are numbers.
         #Assigns entries to variables.
         p = float(binom_p_entry.get().strip())
         n = float (binom_n_entry.get().strip())
         y = float(binom_y_entry.get().strip())
 
-        #Checks if p is in range.
+        #Checks for Error 3: p is not between 0 and 1, inclusive.
         if p > 1 or p < 0:
             binom_p_entry.delete(0, END)
-            binom_p_entry.insert(0, "Error 3: Please input a valid probability.")
-            x = 3
+            binom_p_entry.insert(0, "Error 3: p must be between 0 and 1 inclusive")
+            m = 3
 
-        #Checks if n is a positive integer
+        #Checks for error 4: n is not an integer
         try:
+
             int (n)
+            #Checks for error 5: n is not positive
             if n < 1:
                 binom_n_entry.delete(0, END)
-                binom_n_entry.insert(0, "Error 5: Please input a valid positive integer.")
-                x = 5
+                binom_n_entry.insert(0, "Error 5: n must be positive")
+                m = 5
         except:
             binom_n_entry.delete(0, END)
-            binom_n_entry.insert(0, "Error 4: Please input a valid positive integer.")
-            x = 4
+            binom_n_entry.insert(0, "Error 4: n must be an integer.")
+            m = 4
 
-        #Checks if y is an integer, positive, and in range of n.
+        #Checks for error 4: n is not an integer
         try:
             int (y)
+            #Checks for error 5: y is not positive
             if y < 1:
                 binom_y_entry.delete(0, END)
-                binom_y_entry.insert(0, "Error 5: Please input a valid positive integer.")
-                x = 5
+                binom_y_entry.insert(0, "Error 5: Y is not positive.")
+                m = 5
+            #Checks for error 6: y is not in range of n
             if y > n:
                 binom_y_entry.delete(0, END)
-                binom_y_entry.insert(0, "Error 6: Please input an integer in range of n.")
-                x = 6
+                binom_y_entry.insert(0, "Error 6: Y must be between 0 and n, inclusive.")
+                m = 6
         except:
             binom_y_entry.delete(0, END)
-            binom_y_entry.insert(0, "Error 4: Please input a valid positive integer.")
-            x = 4
+            binom_y_entry.insert(0, "Error 4: Y must be an integer.")
+            m = 4
 
-    binomial (x)
+    binomial (m)
 
 
 
@@ -421,32 +426,21 @@ def poisson_errorcheck():
     for i in poisson_entries:
         #Checks for Error 1 : No input was given
         if i.get().strip() == "":
-            i.insert (0,"Error 1: Please insert a parameter.")
+            i.insert (0,"Error 1: This is a required field")
             m = 1
         else:
+            #Checks for Error 2: Input not float
             try:
                 float(i.get().strip())
+                #Check for Error 3: Input not positive
+                if i < 0:
+                    poisson_z_entry.delete(0, END)
+                    poisson_z_entry.insert(0, "Error 3: Input must be positive.")
+                    m = 3
             except:
                 i.delete (0, END)
-                i.insert (0,"Error 2: Please insert a valid number.")
+                i.insert (0,"Error 2: Input was not a float.")
                 m = 2
-
-    if m == 0: #If all entry fields are numbers.
-        #Assigns entries to variables.
-        l = float(poisson_l_entry.get().strip())
-        z = float(poisson_z_entry.get().strip())
-
-        #Checks if z is an integer and positive.
-        try:
-            int (z)
-            if z < 1:
-                poisson_z_entry.delete(0, END)
-                poisson_z_entry.insert(0, "Error 3: Please input a valid positive integer.")
-                m = 3
-        except:
-            poisson_z_entry.delete(0, END)
-            poisson_z_entry.insert(0, "Error 4: Please input a valid positive integer.")
-            m = 4
 
     poisson (m)
 
