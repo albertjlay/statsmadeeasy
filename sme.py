@@ -376,7 +376,7 @@ binom_calculate.grid (row = 6, column = 0, columnspan = 3, pady = 3)
 binom_accuracy_label.grid (row = 7, column = 0, sticky = W)
 binom_accuracy_dropdown.grid (row = 7, column = 2)
 binom_result.grid(row = 8, column = 0, columnspan = 3, pady = (10,0))
-binom_expvar.grid (row = 9, column = 0, columnspan = 3, pady = (0, 153))
+binom_expvar.grid (row = 9, column = 0, columnspan = 3, pady = (0, 143))
 
 
 binom_operation_label1.grid (row = 3, column = 1)
@@ -436,7 +436,7 @@ def poisson_errorcheck():
                 float(i.get().strip())
             except:
                 i.delete (0, END)
-                i.insert (0,"Error 2: Input was not a float.")
+                i.insert (0,"Error 2: Input was not a number.")
                 m = 2
         if m == 0:
             #Check for Error 3: Input not positive
@@ -444,6 +444,13 @@ def poisson_errorcheck():
                 poisson_z_entry.delete(0, END)
                 poisson_z_entry.insert(0, "Error 3: Input must be positive.")
                 m = 3
+    if m ==0:
+        try:
+            int (poisson_z_entry.get())
+        except:
+            poisson_z_entry.delete(0, END)
+            poisson_z_entry.insert(0, "Error 4: Input must be integer.")
+            m = 4
 
     poiss (m)
 
@@ -505,7 +512,7 @@ poisson_calculate.grid (row = 5, column = 0, columnspan = 3, pady = 3)
 poisson_accuracy_label.grid (row = 6, column = 0, sticky = W)
 poisson_accuracy_dropdown.grid (row = 6, column = 2)
 poisson_result.grid(row = 7, column = 0, columnspan = 3, pady = (10, 0))
-poisson_expvar.grid(row = 8, column = 0, columnspan = 3, pady = (0, 180))
+poisson_expvar.grid(row = 8, column = 0, columnspan = 3, pady = (0, 171))
 
 
 poisson_operation_label1.grid (row = 3, column = 1)
