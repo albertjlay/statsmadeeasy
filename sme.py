@@ -40,8 +40,8 @@ def normal (x):
             probability = 1 - (norm.cdf (random_var, loc = mu, scale = sigma))
             norm_result.config(text = "P ( X > " + str(random_var) + " ) = " + str(round(probability,norm_accuracy_var.get())))
 
-def graph_normal (x):
-    if x == 0:
+def graph_normal (n):
+    if n == 0:
         #If variance was inputted, change to SD first before calculaton. If SD, store SD as float.
         if norm_sd_var.get() == "Variance":
             sigma = math.sqrt(float(norm_sd_entry.get()))
@@ -66,22 +66,36 @@ def graph_normal (x):
 
         #Generates 200 plot points linearly spaced between (mean - 4SD) and (mean + 4SD) for x-axis
         x = np.linspace(mu - 4 * sigma, mu + 4 * sigma, 200)
+
         #Inserts all 200 values of X into a pdf of normal distribution
         y = norm.pdf(x, mu, sigma)
         #Plots coordinates and show graph
-        plt.plot (x, y, color = "#14a795")
+        plt.plot (x, y, color = "#ea5252")
+
+        #Colors the area under the normal distribution that corresponds to probability
+        if norm_operation_var.get() == "<":    #Colors from (mean - 4SD) to X
+            #Generates 200 plot points, linearly spaced in range.
+            a = np.linspace (mu - 4*sigma, float(norm_x_entry.get()), 200)
+            #Colors according to range. Note that norm.pdf is used instead of y because the first parameter must be according to area. If not, a different norm will be created.
+            plt.fill_between (a, norm.pdf(a, mu, sigma))
+        else:    #Colors from X to (mean + 4SD)
+            a = np.linspace (float(norm_x_entry.get()), mu + 4 * sigma, 200)
+            #Colors according to range. Note that norm.pdf is used instead of y because the first parameter must be according to area. If not, a different norm will be created.
+            plt.fill_between (a, norm.pdf(a, mu, sigma))
+
+        #Shows figure in matplotlib software
         plt.show()
 
 
 #Function that checks for bad inputs. Also takes a parameter a which will be used to determine whether graph or calculate is desired.
 def normal_errorcheck(a):
     #x is variable that will be returned to the normal function to indicate whether an error occurred. 0 means no error.
-    x = 0
+    n = 0
     for i in norm_entries:
         #Checks for Error 1 : No input was given
         if i.get().strip() == "":
             i.insert (0,"Error 1: Please insert a parameter.")
-            x = 1
+            n = 1
         else:
             #Checks for error 2: Input was not a number.
             try:
@@ -89,11 +103,11 @@ def normal_errorcheck(a):
             except:
                 i.delete (0, END)
                 i.insert (0,"Error 2: Please insert a valid number.")
-                x = 2
+                n = 2
     if a == 0:
-        normal (x)
+        normal (n)
     elif a == 1:
-        graph_normal (x)
+        graph_normal (n)
 
 
 #Frame for Normal distribution section.
@@ -420,15 +434,15 @@ def poisson_errorcheck():
     if m == 0: #If all entry fields are numbers.
         #Assigns entries to variables.
         l = float(poisson_l_entry.get().strip())
-        y = float(poisson_z_entry.get().strip())
+        z = float(poisson_z_entry.get().strip())
 
-        #Checks if y is an integer, positive, and in range of n.
+        #Checks if z is an integer and positive.
         try:
-            int (y)
-            if y < 1:
+            int (z)
+            if z < 1:
                 poisson_z_entry.delete(0, END)
                 poisson_z_entry.insert(0, "Error 3: Please input a valid positive integer.")
-                m = 5
+                m = 3
         except:
             poisson_z_entry.delete(0, END)
             poisson_z_entry.insert(0, "Error 4: Please input a valid positive integer.")
