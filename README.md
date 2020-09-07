@@ -10,7 +10,7 @@ The named distributions are matched to help A-Level Mathematics Students.
 # Features
 ## Calculate the probability of the random variables
 ### Done by implementing scipy.stats
-![] (https://github.com/albertjlay/statsmadeeasy/tree/master/readme_media/calculate_prob.gif)
+![alt text] (https://github.com/albertjlay/statsmadeeasy/tree/master/readme_media/calculate_prob.gif)
 
 ## Change the precision of the probability output
 ![] (readme_media/change_accuracy.gif)
