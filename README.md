@@ -5,7 +5,7 @@ Simple program to calculate probability of certain events that are modelled usin
 * Normal
 * Poisson
 
-Also features a function that graphs a normal probability density function with a colored area based on user input.
+Also features a function that graphs a normal probability density function with a colored area based on user input.\n
 The named distributions are matched to help A-Level Mathematics Students.
 
 ![](readme_media/general_GUI.png)
@@ -13,7 +13,7 @@ The named distributions are matched to help A-Level Mathematics Students.
 
 # Features
 ## Calculate the probability of the random variables
-Done by implementing scipy.stats
+Done by implementing scipy.stats\n
 ![](readme_media/calculate_prob.gif)
 
 ## Change the precision of the probability output
